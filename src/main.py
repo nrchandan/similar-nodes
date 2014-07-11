@@ -134,13 +134,15 @@ def score(instance, group):
 def similar_nodes(instances):
     flat_ins = flatten(instances)
     reduce_dimensions(flat_ins)
-    kind = 'all' if SEARCH_TYPE == 'ALL' else 'any'
+    kind = 'all' if SEARCH_TYPE == 'AND' else 'any'
     search_result = search(flat_ins, SEARCH_TERMS, kind=kind)
     norm = IDF(TF(flat_ins), TF(search_result))
     scores = [(score(instance, norm), instance['instanceId'])
               for instance in flat_ins]
     scores.sort(reverse=True)
 
+    print "Search Results:"
+    pprint(scores[:len(search_result)])
     result = []
     for instance in scores[len(search_result):len(search_result) + 5]:
         if instance[0][0] < THRESHOLD_SIMILARITY_SCORE:
@@ -152,7 +154,10 @@ def similar_nodes(instances):
 def main():
     d = json.loads(open('instances.json').read())
     instances = d['success']['body']['objects']
-    pprint(similar_nodes(instances))
+    print "Search terms: ", SEARCH_TERMS
+    similar = similar_nodes(instances)
+    print "Similar Results:"
+    pprint(similar)
 
 if __name__ == '__main__':
     main()
