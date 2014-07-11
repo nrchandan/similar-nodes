@@ -22,8 +22,10 @@ Algorithm
 To Do
 =====
 
+- Allow specifying partial terms e.g. 'medium' instead of 'm1.medium'
 - Clean up the code (apply map, filter and eliminate loops)
 - Implement a statistical approach to grouping of device count and size values
 - Identify a smarter way to determine similarity threshold (currently a setting)
 - Expose a RESTful API
 - Invoke an API to gather instance details
+- Introduce logging
