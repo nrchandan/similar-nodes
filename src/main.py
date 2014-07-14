@@ -4,7 +4,7 @@ from collections import Counter, defaultdict
 
 from stopwords import ignore_keys
 from settings import MIN_DISTINCT, MAX_DISTINCT_PCT, SEARCH_TERMS, \
-    SEARCH_TYPE, THRESHOLD_SIMILARITY_SCORE
+    SEARCH_TYPE, THRESHOLD_SIMILARITY_SCORE, NUM_CAUSES, INSTANCEID
 
 
 def reduce_dimensions(instances):
@@ -20,7 +20,7 @@ def reduce_dimensions(instances):
             all_values[key].add(value)
             size.update([key])
     for key, value in all_values.items():
-        if key == 'instanceId':
+        if key == INSTANCEID:
             continue
         if 100 * len(value) // size[key] > MAX_DISTINCT_PCT or \
            len(value) < MIN_DISTINCT:
@@ -126,9 +126,9 @@ def score(instance, group):
     for item in instance.items():
         if item in group.keys():
             score += group[item]
-            if group[item] > 10:
-                cause.append({item: group[item]})
-    return (round(score, 2), cause)
+            cause.append((group[item], item))
+    cause.sort(reverse=True)
+    return (round(score, 2), cause[:NUM_CAUSES])
 
 
 def similar_nodes(instances):
